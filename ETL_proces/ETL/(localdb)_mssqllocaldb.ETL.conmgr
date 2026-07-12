@@ -1,0 +1,10 @@
+﻿<?xml version="1.0"?>
+<DTS:ConnectionManager xmlns:DTS="www.microsoft.com/SqlServer/Dts"
+  DTS:ObjectName="(localdb)_mssqllocaldb.ETL"
+  DTS:DTSID="{E5BDE523-CF67-4C12-9FED-A558DC7212FE}"
+  DTS:CreationName="ADO.NET:Microsoft.Data.SqlClient.SqlConnection, Microsoft.Data.SqlClient, Version=5.0.0.0, Culture=neutral, PublicKeyToken=23ec7fc2d6eaa4a5">
+  <DTS:ObjectData>
+    <DTS:ConnectionManager
+      DTS:ConnectionString="Data Source=(localdb)\mssqllocaldb;Initial Catalog=ETL;Integrated Security=True;" />
+  </DTS:ObjectData>
+</DTS:ConnectionManager>

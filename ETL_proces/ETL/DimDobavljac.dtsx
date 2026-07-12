@@ -1,0 +1,463 @@
+﻿<?xml version="1.0"?>
+<DTS:Executable xmlns:DTS="www.microsoft.com/SqlServer/Dts"
+  DTS:refId="Package"
+  DTS:CreationDate="6/27/2026 12:48:03 PM"
+  DTS:CreationName="Microsoft.Package"
+  DTS:CreatorComputerName="DESKTOP-JHGA6CJ"
+  DTS:CreatorName="DESKTOP-JHGA6CJ\Vanja"
+  DTS:DTSID="{1C40F8FC-82FC-4705-AB65-4430F271DE09}"
+  DTS:ExecutableType="Microsoft.Package"
+  DTS:LastModifiedProductVersion="17.0.1016.0"
+  DTS:LocaleID="2057"
+  DTS:ObjectName="Package1"
+  DTS:PackageType="5"
+  DTS:VersionBuild="12"
+  DTS:VersionGUID="{C60114FC-A6D8-4723-A965-D19AE6E07B7F}">
+  <DTS:Property
+    DTS:Name="PackageFormatVersion">8</DTS:Property>
+  <DTS:Variables />
+  <DTS:Executables>
+    <DTS:Executable
+      DTS:refId="Package\DROP and CREATE DimDobavljac"
+      DTS:CreationName="Microsoft.ExecuteSQLTask"
+      DTS:Description="Execute SQL Task"
+      DTS:DTSID="{24F746E9-4285-45A9-AB27-D397A7782C0C}"
+      DTS:ExecutableType="Microsoft.ExecuteSQLTask"
+      DTS:LocaleID="-1"
+      DTS:ObjectName="DROP and CREATE DimDobavljac"
+      DTS:TaskContact="Execute SQL Task; Microsoft Corporation; SQL Server 2025; © 2025 Microsoft Corporation; All Rights Reserved;http://www.microsoft.com/sql/support/default.asp;1"
+      DTS:ThreadHint="0">
+      <DTS:Variables />
+      <DTS:ObjectData>
+        <SQLTask:SqlTaskData
+          SQLTask:Connection="{E5BDE523-CF67-4C12-9FED-A558DC7212FE}"
+          SQLTask:SqlStatementSource="IF EXISTS&#xA;&#x9;(SELECT *&#xA;&#x9;FROM INFORMATION_SCHEMA.REFERENTIAL_CONSTRAINTS&#xA;&#x9;WHERE CONSTRAINT_NAME = 'FK_FactsPorudžbine_DimDobavljac')&#xA;BEGIN&#xA;&#x9;ALTER TABLE [dbo].[FactsPorudžbine] DROP CONSTRAINT [FK_FactsPorudžbine_DimDobavljac]&#xA;END&#xA;&#xA;IF EXISTS&#xA;&#x9;(SELECT *&#xA;&#x9;FROM sysobjects&#xA;&#x9;WHERE id = OBJECT_ID(N'DimDobavljac'))&#xA;BEGIN&#xA;&#x9;DROP TABLE [dbo].[DimDobavljac]&#xA;&#x9;&#xA;&#x9;CREATE TABLE [dbo].[DimDobavljac](&#xA;&#x9;[seller_sid] [int] IDENTITY(1,1) NOT NULL,&#xA;&#x9;[seller_id] [nvarchar](50) NOT NULL,&#xA;&#x9;[seller_zip_code_prefix] [int] NOT NULL,&#xA;&#x9;[seller_city] [nvarchar](50) NOT NULL,&#xA;&#x9;[seller_state] [nvarchar](50) NOT NULL,&#xA; CONSTRAINT [PK_DimDobavljac] PRIMARY KEY CLUSTERED &#xA;(&#xA;&#x9;[seller_sid] ASC&#xA;)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]&#xA;) ON [PRIMARY]&#xA;END" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask" />
+      </DTS:ObjectData>
+    </DTS:Executable>
+    <DTS:Executable
+      DTS:refId="Package\ETL DimDobavljac"
+      DTS:CreationName="Microsoft.Pipeline"
+      DTS:Description="Data Flow Task"
+      DTS:DTSID="{C09FA793-693F-4C97-9A85-707BEAE25D36}"
+      DTS:ExecutableType="Microsoft.Pipeline"
+      DTS:LocaleID="-1"
+      DTS:ObjectName="ETL DimDobavljac"
+      DTS:TaskContact="Performs high-performance data extraction, transformation and loading;Microsoft Corporation; Microsoft SQL Server; (C) Microsoft Corporation; All Rights Reserved;http://www.microsoft.com/sql/support/default.asp;1">
+      <DTS:Variables />
+      <DTS:ObjectData>
+        <pipeline
+          version="1">
+          <components>
+            <component
+              refId="Package\ETL DimDobavljac\Citanje iz olist_sellers_dataset"
+              componentClassID="Microsoft.ManagedComponentHost"
+              contactInfo="Consumes data from SQL Server, OLE DB, ODBC, or Oracle, using the corresponding .NET Framework data provider. Use a Transact-SQL statement to define the result set. For example, extract data from SQL Server with the .NET Framework data provider for SQL Server.;Microsoft Corporation; Microsoft SQL Server; © Microsoft Corporation; All Rights Reserved; http://www.microsoft.com/sql/support;4"
+              description="Consumes data from SQL Server, OLE DB, ODBC, or Oracle, using the corresponding .NET Framework data provider. Use a Transact-SQL statement to define the result set. For example, extract data from SQL Server with the .NET Framework data provider for SQL Server."
+              name="Citanje iz olist_sellers_dataset"
+              usesDispositions="true"
+              version="4">
+              <properties>
+                <property
+                  dataType="System.String"
+                  description="Specifies the SQL statement used by the component to extract data."
+                  expressionType="Notify"
+                  name="SqlCommand"
+                  UITypeEditor="Microsoft.DataTransformationServices.Controls.ModalMultilineStringEditor">SELECT *
+FROM olist_sellers_dataset</property>
+                <property
+                  dataType="System.Int32"
+                  description="The number of seconds before a command times out.  A value of 0 indicates an infinite time-out."
+                  name="CommandTimeout">30</property>
+                <property
+                  dataType="System.Boolean"
+                  description="Indicates whether to allow non-string external columns to be implicitly converted to strings at the output columns."
+                  name="AllowImplicitStringConversion">true</property>
+                <property
+                  dataType="System.String"
+                  description="The Source database table name."
+                  expressionType="Notify"
+                  name="TableOrViewName"
+                  UITypeEditor="Microsoft.DataTransformationServices.Controls.ModalMultilineStringEditor"></property>
+                <property
+                  dataType="System.Int32"
+                  description="Specify the mode to retrieve external column information"
+                  name="AccessMode"
+                  typeConverter="Microsoft.SqlServer.Dts.Pipeline.DataReaderSourceAdapter+EnumToStringConverter">2</property>
+                <property
+                  dataType="System.String"
+                  name="UserComponentTypeName">Microsoft.DataReaderSourceAdapter</property>
+              </properties>
+              <connections>
+                <connection
+                  refId="Package\ETL DimDobavljac\Citanje iz olist_sellers_dataset.Connections[IDbConnection]"
+                  connectionManagerID="{EC52771B-F73F-415D-BBE1-6ABC6E6CEF3A}:external"
+                  connectionManagerRefId="Project.ConnectionManagers[(localdb)_mssqllocaldb.OLTP]"
+                  description="Managed connection manager"
+                  name="IDbConnection" />
+              </connections>
+              <outputs>
+                <output
+                  refId="Package\ETL DimDobavljac\Citanje iz olist_sellers_dataset.Outputs[ADO NET Source Output]"
+                  name="ADO NET Source Output">
+                  <outputColumns>
+                    <outputColumn
+                      refId="Package\ETL DimDobavljac\Citanje iz olist_sellers_dataset.Outputs[ADO NET Source Output].Columns[seller_id]"
+                      dataType="wstr"
+                      errorOrTruncationOperation="Conversion"
+                      errorRowDisposition="FailComponent"
+                      externalMetadataColumnId="Package\ETL DimDobavljac\Citanje iz olist_sellers_dataset.Outputs[ADO NET Source Output].ExternalColumns[seller_id]"
+                      length="50"
+                      lineageId="Package\ETL DimDobavljac\Citanje iz olist_sellers_dataset.Outputs[ADO NET Source Output].Columns[seller_id]"
+                      name="seller_id"
+                      truncationRowDisposition="FailComponent" />
+                    <outputColumn
+                      refId="Package\ETL DimDobavljac\Citanje iz olist_sellers_dataset.Outputs[ADO NET Source Output].Columns[seller_zip_code_prefix]"
+                      dataType="i4"
+                      errorOrTruncationOperation="Conversion"
+                      errorRowDisposition="FailComponent"
+                      externalMetadataColumnId="Package\ETL DimDobavljac\Citanje iz olist_sellers_dataset.Outputs[ADO NET Source Output].ExternalColumns[seller_zip_code_prefix]"
+                      lineageId="Package\ETL DimDobavljac\Citanje iz olist_sellers_dataset.Outputs[ADO NET Source Output].Columns[seller_zip_code_prefix]"
+                      name="seller_zip_code_prefix"
+                      truncationRowDisposition="FailComponent" />
+                    <outputColumn
+                      refId="Package\ETL DimDobavljac\Citanje iz olist_sellers_dataset.Outputs[ADO NET Source Output].Columns[seller_city]"
+                      dataType="wstr"
+                      errorOrTruncationOperation="Conversion"
+                      errorRowDisposition="FailComponent"
+                      externalMetadataColumnId="Package\ETL DimDobavljac\Citanje iz olist_sellers_dataset.Outputs[ADO NET Source Output].ExternalColumns[seller_city]"
+                      length="50"
+                      lineageId="Package\ETL DimDobavljac\Citanje iz olist_sellers_dataset.Outputs[ADO NET Source Output].Columns[seller_city]"
+                      name="seller_city"
+                      truncationRowDisposition="FailComponent" />
+                    <outputColumn
+                      refId="Package\ETL DimDobavljac\Citanje iz olist_sellers_dataset.Outputs[ADO NET Source Output].Columns[seller_state]"
+                      dataType="wstr"
+                      errorOrTruncationOperation="Conversion"
+                      errorRowDisposition="FailComponent"
+                      externalMetadataColumnId="Package\ETL DimDobavljac\Citanje iz olist_sellers_dataset.Outputs[ADO NET Source Output].ExternalColumns[seller_state]"
+                      length="50"
+                      lineageId="Package\ETL DimDobavljac\Citanje iz olist_sellers_dataset.Outputs[ADO NET Source Output].Columns[seller_state]"
+                      name="seller_state"
+                      truncationRowDisposition="FailComponent" />
+                  </outputColumns>
+                  <externalMetadataColumns
+                    isUsed="True">
+                    <externalMetadataColumn
+                      refId="Package\ETL DimDobavljac\Citanje iz olist_sellers_dataset.Outputs[ADO NET Source Output].ExternalColumns[seller_id]"
+                      dataType="wstr"
+                      length="50"
+                      name="seller_id" />
+                    <externalMetadataColumn
+                      refId="Package\ETL DimDobavljac\Citanje iz olist_sellers_dataset.Outputs[ADO NET Source Output].ExternalColumns[seller_zip_code_prefix]"
+                      dataType="i4"
+                      name="seller_zip_code_prefix" />
+                    <externalMetadataColumn
+                      refId="Package\ETL DimDobavljac\Citanje iz olist_sellers_dataset.Outputs[ADO NET Source Output].ExternalColumns[seller_city]"
+                      dataType="wstr"
+                      length="50"
+                      name="seller_city" />
+                    <externalMetadataColumn
+                      refId="Package\ETL DimDobavljac\Citanje iz olist_sellers_dataset.Outputs[ADO NET Source Output].ExternalColumns[seller_state]"
+                      dataType="wstr"
+                      length="50"
+                      name="seller_state" />
+                  </externalMetadataColumns>
+                </output>
+                <output
+                  refId="Package\ETL DimDobavljac\Citanje iz olist_sellers_dataset.Outputs[ADO NET Source Error Output]"
+                  isErrorOut="true"
+                  name="ADO NET Source Error Output">
+                  <outputColumns>
+                    <outputColumn
+                      refId="Package\ETL DimDobavljac\Citanje iz olist_sellers_dataset.Outputs[ADO NET Source Error Output].Columns[seller_id]"
+                      dataType="wstr"
+                      length="50"
+                      lineageId="Package\ETL DimDobavljac\Citanje iz olist_sellers_dataset.Outputs[ADO NET Source Error Output].Columns[seller_id]"
+                      name="seller_id" />
+                    <outputColumn
+                      refId="Package\ETL DimDobavljac\Citanje iz olist_sellers_dataset.Outputs[ADO NET Source Error Output].Columns[seller_zip_code_prefix]"
+                      dataType="i4"
+                      lineageId="Package\ETL DimDobavljac\Citanje iz olist_sellers_dataset.Outputs[ADO NET Source Error Output].Columns[seller_zip_code_prefix]"
+                      name="seller_zip_code_prefix" />
+                    <outputColumn
+                      refId="Package\ETL DimDobavljac\Citanje iz olist_sellers_dataset.Outputs[ADO NET Source Error Output].Columns[seller_city]"
+                      dataType="wstr"
+                      length="50"
+                      lineageId="Package\ETL DimDobavljac\Citanje iz olist_sellers_dataset.Outputs[ADO NET Source Error Output].Columns[seller_city]"
+                      name="seller_city" />
+                    <outputColumn
+                      refId="Package\ETL DimDobavljac\Citanje iz olist_sellers_dataset.Outputs[ADO NET Source Error Output].Columns[seller_state]"
+                      dataType="wstr"
+                      length="50"
+                      lineageId="Package\ETL DimDobavljac\Citanje iz olist_sellers_dataset.Outputs[ADO NET Source Error Output].Columns[seller_state]"
+                      name="seller_state" />
+                    <outputColumn
+                      refId="Package\ETL DimDobavljac\Citanje iz olist_sellers_dataset.Outputs[ADO NET Source Error Output].Columns[ErrorCode]"
+                      dataType="i4"
+                      lineageId="Package\ETL DimDobavljac\Citanje iz olist_sellers_dataset.Outputs[ADO NET Source Error Output].Columns[ErrorCode]"
+                      name="ErrorCode"
+                      specialFlags="1" />
+                    <outputColumn
+                      refId="Package\ETL DimDobavljac\Citanje iz olist_sellers_dataset.Outputs[ADO NET Source Error Output].Columns[ErrorColumn]"
+                      dataType="i4"
+                      lineageId="Package\ETL DimDobavljac\Citanje iz olist_sellers_dataset.Outputs[ADO NET Source Error Output].Columns[ErrorColumn]"
+                      name="ErrorColumn"
+                      specialFlags="2" />
+                  </outputColumns>
+                  <externalMetadataColumns />
+                </output>
+              </outputs>
+            </component>
+            <component
+              refId="Package\ETL DimDobavljac\Upis u DimDobavljac"
+              componentClassID="Microsoft.ManagedComponentHost"
+              contactInfo="Loads data into an ADO.NET-compliant database that uses a database table or view. Load data into a new or existing table. For example, use an ADO.NET provider for ODBC to load data into an ODBC destination.;Microsoft Corporation; Microsoft SQL Server; © Microsoft Corporation; All Rights Reserved; http://www.microsoft.com/sql/support;2"
+              description="Loads data into an ADO.NET-compliant database that uses a database table or view. Load data into a new or existing table. For example, use an ADO.NET provider for ODBC to load data into an ODBC destination."
+              name="Upis u DimDobavljac"
+              usesDispositions="true"
+              version="2">
+              <properties>
+                <property
+                  dataType="System.String"
+                  description="The Destination database table name."
+                  expressionType="Notify"
+                  name="TableOrViewName"
+                  UITypeEditor="Microsoft.DataTransformationServices.Controls.ModalMultilineStringEditor">"dbo"."DimDobavljac"</property>
+                <property
+                  dataType="System.Int32"
+                  description="Specify the number of rows per batch. The default is 0 which uses the same size as SSIS internal buffer. "
+                  expressionType="Notify"
+                  name="BatchSize">0</property>
+                <property
+                  dataType="System.Int32"
+                  description="The number of seconds before a command times out. A value of 0 indicates infinite time-out. "
+                  expressionType="Notify"
+                  name="CommandTimeout">30</property>
+                <property
+                  dataType="System.Boolean"
+                  description="Specifies whether to use the SqlBulkCopy interface to improve the performance of bulk insert operations. Only certain providers support this interface."
+                  expressionType="Notify"
+                  name="UseBulkInsertWhenPossible">true</property>
+                <property
+                  dataType="System.String"
+                  name="UserComponentTypeName">Microsoft.ADONETDestination</property>
+              </properties>
+              <connections>
+                <connection
+                  refId="Package\ETL DimDobavljac\Upis u DimDobavljac.Connections[IDbConnection]"
+                  connectionManagerID="{E5BDE523-CF67-4C12-9FED-A558DC7212FE}:external"
+                  connectionManagerRefId="Project.ConnectionManagers[(localdb)_mssqllocaldb.ETL]"
+                  description="Managed connection manager"
+                  name="IDbConnection" />
+              </connections>
+              <inputs>
+                <input
+                  refId="Package\ETL DimDobavljac\Upis u DimDobavljac.Inputs[ADO NET Destination Input]"
+                  errorRowDisposition="FailComponent"
+                  hasSideEffects="true"
+                  name="ADO NET Destination Input">
+                  <inputColumns>
+                    <inputColumn
+                      refId="Package\ETL DimDobavljac\Upis u DimDobavljac.Inputs[ADO NET Destination Input].Columns[seller_id]"
+                      cachedDataType="wstr"
+                      cachedLength="50"
+                      cachedName="seller_id"
+                      externalMetadataColumnId="Package\ETL DimDobavljac\Upis u DimDobavljac.Inputs[ADO NET Destination Input].ExternalColumns[seller_id]"
+                      lineageId="Package\ETL DimDobavljac\Citanje iz olist_sellers_dataset.Outputs[ADO NET Source Output].Columns[seller_id]" />
+                    <inputColumn
+                      refId="Package\ETL DimDobavljac\Upis u DimDobavljac.Inputs[ADO NET Destination Input].Columns[seller_zip_code_prefix]"
+                      cachedDataType="i4"
+                      cachedName="seller_zip_code_prefix"
+                      externalMetadataColumnId="Package\ETL DimDobavljac\Upis u DimDobavljac.Inputs[ADO NET Destination Input].ExternalColumns[seller_zip_code_prefix]"
+                      lineageId="Package\ETL DimDobavljac\Citanje iz olist_sellers_dataset.Outputs[ADO NET Source Output].Columns[seller_zip_code_prefix]" />
+                    <inputColumn
+                      refId="Package\ETL DimDobavljac\Upis u DimDobavljac.Inputs[ADO NET Destination Input].Columns[seller_city]"
+                      cachedDataType="wstr"
+                      cachedLength="50"
+                      cachedName="seller_city"
+                      externalMetadataColumnId="Package\ETL DimDobavljac\Upis u DimDobavljac.Inputs[ADO NET Destination Input].ExternalColumns[seller_city]"
+                      lineageId="Package\ETL DimDobavljac\Citanje iz olist_sellers_dataset.Outputs[ADO NET Source Output].Columns[seller_city]" />
+                    <inputColumn
+                      refId="Package\ETL DimDobavljac\Upis u DimDobavljac.Inputs[ADO NET Destination Input].Columns[seller_state]"
+                      cachedDataType="wstr"
+                      cachedLength="50"
+                      cachedName="seller_state"
+                      externalMetadataColumnId="Package\ETL DimDobavljac\Upis u DimDobavljac.Inputs[ADO NET Destination Input].ExternalColumns[seller_state]"
+                      lineageId="Package\ETL DimDobavljac\Citanje iz olist_sellers_dataset.Outputs[ADO NET Source Output].Columns[seller_state]" />
+                  </inputColumns>
+                  <externalMetadataColumns
+                    isUsed="True">
+                    <externalMetadataColumn
+                      refId="Package\ETL DimDobavljac\Upis u DimDobavljac.Inputs[ADO NET Destination Input].ExternalColumns[seller_sid]"
+                      dataType="i4"
+                      name="seller_sid" />
+                    <externalMetadataColumn
+                      refId="Package\ETL DimDobavljac\Upis u DimDobavljac.Inputs[ADO NET Destination Input].ExternalColumns[seller_id]"
+                      dataType="wstr"
+                      length="50"
+                      name="seller_id" />
+                    <externalMetadataColumn
+                      refId="Package\ETL DimDobavljac\Upis u DimDobavljac.Inputs[ADO NET Destination Input].ExternalColumns[seller_zip_code_prefix]"
+                      dataType="i4"
+                      name="seller_zip_code_prefix" />
+                    <externalMetadataColumn
+                      refId="Package\ETL DimDobavljac\Upis u DimDobavljac.Inputs[ADO NET Destination Input].ExternalColumns[seller_city]"
+                      dataType="wstr"
+                      length="50"
+                      name="seller_city" />
+                    <externalMetadataColumn
+                      refId="Package\ETL DimDobavljac\Upis u DimDobavljac.Inputs[ADO NET Destination Input].ExternalColumns[seller_state]"
+                      dataType="wstr"
+                      length="50"
+                      name="seller_state" />
+                  </externalMetadataColumns>
+                </input>
+              </inputs>
+              <outputs>
+                <output
+                  refId="Package\ETL DimDobavljac\Upis u DimDobavljac.Outputs[ADO NET Destination Error Output]"
+                  exclusionGroup="1"
+                  isErrorOut="true"
+                  name="ADO NET Destination Error Output"
+                  synchronousInputId="Package\ETL DimDobavljac\Upis u DimDobavljac.Inputs[ADO NET Destination Input]">
+                  <outputColumns>
+                    <outputColumn
+                      refId="Package\ETL DimDobavljac\Upis u DimDobavljac.Outputs[ADO NET Destination Error Output].Columns[ErrorCode]"
+                      dataType="i4"
+                      lineageId="Package\ETL DimDobavljac\Upis u DimDobavljac.Outputs[ADO NET Destination Error Output].Columns[ErrorCode]"
+                      name="ErrorCode"
+                      specialFlags="1" />
+                    <outputColumn
+                      refId="Package\ETL DimDobavljac\Upis u DimDobavljac.Outputs[ADO NET Destination Error Output].Columns[ErrorColumn]"
+                      dataType="i4"
+                      lineageId="Package\ETL DimDobavljac\Upis u DimDobavljac.Outputs[ADO NET Destination Error Output].Columns[ErrorColumn]"
+                      name="ErrorColumn"
+                      specialFlags="2" />
+                  </outputColumns>
+                  <externalMetadataColumns />
+                </output>
+              </outputs>
+            </component>
+          </components>
+          <paths>
+            <path
+              refId="Package\ETL DimDobavljac.Paths[ADO NET Source Output]"
+              endId="Package\ETL DimDobavljac\Upis u DimDobavljac.Inputs[ADO NET Destination Input]"
+              name="ADO NET Source Output"
+              startId="Package\ETL DimDobavljac\Citanje iz olist_sellers_dataset.Outputs[ADO NET Source Output]" />
+          </paths>
+        </pipeline>
+      </DTS:ObjectData>
+    </DTS:Executable>
+  </DTS:Executables>
+  <DTS:PrecedenceConstraints>
+    <DTS:PrecedenceConstraint
+      DTS:refId="Package.PrecedenceConstraints[Constraint]"
+      DTS:CreationName=""
+      DTS:DTSID="{3C0B7E83-9425-44D2-9DBA-6AD132BDEF3D}"
+      DTS:From="Package\DROP and CREATE DimDobavljac"
+      DTS:LogicalAnd="True"
+      DTS:ObjectName="Constraint"
+      DTS:To="Package\ETL DimDobavljac" />
+  </DTS:PrecedenceConstraints>
+  <DTS:DesignTimeProperties><![CDATA[<?xml version="1.0"?>
+<!--This CDATA section contains the layout information of the package. The section includes information such as (x,y) coordinates, width, and height.-->
+<!--If you manually edit this section and make a mistake, you can delete it. -->
+<!--The package will still be able to load normally but the previous layout information will be lost and the designer will automatically re-arrange the elements on the design surface.-->
+<Objects
+  Version="8">
+  <!--Each node below will contain properties that do not affect runtime behavior.-->
+  <Package
+    design-time-name="Package">
+    <LayoutInfo>
+      <GraphLayout
+        Capacity="4" xmlns="clr-namespace:Microsoft.SqlServer.IntegrationServices.Designer.Model.Serialization;assembly=Microsoft.SqlServer.IntegrationServices.Graph" xmlns:mssgle="clr-namespace:Microsoft.SqlServer.Graph.LayoutEngine;assembly=Microsoft.SqlServer.Graph" xmlns:assembly="http://schemas.microsoft.com/winfx/2006/xaml">
+        <NodeLayout
+          Size="246.666666666667,42.6666666666667"
+          Id="Package\DROP and CREATE DimDobavljac"
+          TopLeft="186.124991925434,57.4999994290503" />
+        <NodeLayout
+          Size="168,42.6666666666667"
+          Id="Package\ETL DimDobavljac"
+          TopLeft="222.499990053475,153.263156211938" />
+        <EdgeLayout
+          Id="Package.PrecedenceConstraints[Constraint]"
+          TopLeft="307.979157656121,100.166666095717">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="0,53.0964901162207"
+              Start="0,0"
+              End="0,45.5964901162207">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,45.5964901162207" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+      </GraphLayout>
+    </LayoutInfo>
+  </Package>
+  <TaskHost
+    design-time-name="Package\ETL DimDobavljac">
+    <LayoutInfo>
+      <GraphLayout
+        Capacity="4" xmlns="clr-namespace:Microsoft.SqlServer.IntegrationServices.Designer.Model.Serialization;assembly=Microsoft.SqlServer.IntegrationServices.Graph" xmlns:mssgle="clr-namespace:Microsoft.SqlServer.Graph.LayoutEngine;assembly=Microsoft.SqlServer.Graph" xmlns:assembly="http://schemas.microsoft.com/winfx/2006/xaml">
+        <NodeLayout
+          Size="178.666666666667,42.6666666666667"
+          Id="Package\ETL DimDobavljac\Upis u DimDobavljac"
+          TopLeft="216.874990304932,174.47368229484" />
+        <NodeLayout
+          Size="222.666666666667,42.6666666666667"
+          Id="Package\ETL DimDobavljac\Citanje iz olist_sellers_dataset"
+          TopLeft="199.999991059304,73.8947360307557" />
+        <EdgeLayout
+          Id="Package\ETL DimDobavljac.Paths[ADO NET Source Output]"
+          TopLeft="308.770824015451,116.561402697422">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="0,57.9122795974176"
+              Start="0,0"
+              End="0,50.4122795974176">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,50.4122795974176" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+      </GraphLayout>
+    </LayoutInfo>
+  </TaskHost>
+  <PipelineComponentMetadata
+    design-time-name="Package\ETL DimDobavljac\Citanje iz olist_sellers_dataset">
+    <Properties>
+      <Property>
+        <Name>DataSourceViewID</Name>
+      </Property>
+    </Properties>
+  </PipelineComponentMetadata>
+  <PipelineComponentMetadata
+    design-time-name="Package\ETL DimDobavljac\Upis u DimDobavljac">
+    <Properties>
+      <Property>
+        <Name>DataSourceViewID</Name>
+      </Property>
+    </Properties>
+  </PipelineComponentMetadata>
+</Objects>]]></DTS:DesignTimeProperties>
+</DTS:Executable>
